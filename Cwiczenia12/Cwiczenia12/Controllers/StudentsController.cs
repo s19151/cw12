@@ -21,12 +21,12 @@ namespace Cwiczenia12.Controllers
         // GET: Students
         public async Task<IActionResult> Index(string searchString)
         {
-            var students = _context.Student.Include(s => s.IdEnrollmentNavigation);
+            var students = from s in _context.Student
+                           select s;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                var s = students.Where(s => s.FirstName.Contains(searchString));
-                return View(await s.ToListAsync());
+                students = students.Where(s => s.FirstName.Contains(searchString));
             }
 
             return View(await students.ToListAsync());
