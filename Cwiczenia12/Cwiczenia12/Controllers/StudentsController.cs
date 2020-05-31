@@ -18,14 +18,21 @@ namespace Cwiczenia12.Controllers
             _context = context;
         }
 
-        // GET: Students1
-        public async Task<IActionResult> Index()
+        // GET: Students
+        public async Task<IActionResult> Index(string searchString)
         {
-            var s19151Context = _context.Student.Include(s => s.IdEnrollmentNavigation);
-            return View(await s19151Context.ToListAsync());
+            var students = _context.Student.Include(s => s.IdEnrollmentNavigation);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var s = students.Where(s => s.FirstName.Contains(searchString));
+                return View(await s.ToListAsync());
+            }
+
+            return View(await students.ToListAsync());
         }
 
-        // GET: Students1/Details/5
+        // GET: Students/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -44,14 +51,14 @@ namespace Cwiczenia12.Controllers
             return View(student);
         }
 
-        // GET: Students1/Create
+        // GET: Students/Create
         public IActionResult Create()
         {
             ViewData["IdEnrollment"] = new SelectList(_context.Enrollment, "IdEnrollment", "IdEnrollment");
             return View();
         }
 
-        // POST: Students1/Create
+        // POST: Students/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -68,7 +75,7 @@ namespace Cwiczenia12.Controllers
             return View(student);
         }
 
-        // GET: Students1/Edit/5
+        // GET: Students/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -85,7 +92,7 @@ namespace Cwiczenia12.Controllers
             return View(student);
         }
 
-        // POST: Students1/Edit/5
+        // POST: Students/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -121,7 +128,7 @@ namespace Cwiczenia12.Controllers
             return View(student);
         }
 
-        // GET: Students1/Delete/5
+        // GET: Students/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -140,7 +147,7 @@ namespace Cwiczenia12.Controllers
             return View(student);
         }
 
-        // POST: Students1/Delete/5
+        // POST: Students/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
